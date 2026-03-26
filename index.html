@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COSMOS — Interactive Particle Universe</title>
+  <meta name="description"
+    content="An immersive gravitational particle universe simulator. Create galaxies, watch stars collide, and explore the cosmos.">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌌</text></svg>">
+</head>
+
+<body>
+
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loading-title">COSMOS</div>
+    <div class="loading-subtitle">Interactive Particle Universe</div>
+    <div class="loading-bar">
+      <div class="loading-fill"></div>
+    </div>
+  </div>
+
+  <!-- Canvas -->
+  <canvas id="cosmos-canvas"></canvas>
+
+  <!-- Title -->
+  <div id="title">
+    <h1>COSMOS</h1>
+    <span class="subtitle">Interactive Particle Universe</span>
+  </div>
+
+  <!-- Control Panel -->
+  <div id="control-panel" class="panel">
+    <div class="panel-header">
+      <h2>Controls</h2>
+      <button class="panel-toggle" id="toggle-controls">×</button>
+    </div>
+
+    <div class="section">
+      <h3>Presets</h3>
+      <div class="preset-grid">
+        <button class="preset-btn active" data-preset="galaxy">Galaxy Collision</button>
+        <button class="preset-btn" data-preset="solar">Solar System</button>
+        <button class="preset-btn" data-preset="nebula">Nebula</button>
+        <button class="preset-btn" data-preset="bigbang">Big Bang</button>
+        <button class="preset-btn" data-preset="binary">Binary Stars</button>
+        <button class="preset-btn" data-preset="proto">Proto Disk</button>
+        <button class="preset-btn" data-preset="custom">Custom</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Simulation</h3>
+      <div class="slider-group">
+        <label>Spawn Mass <span id="mass-value">10</span></label>
+        <input type="range" id="mass-slider" min="1" max="500" value="10">
+      </div>
+      <div class="slider-group">
+        <label>Gravity <span id="gravity-value">0.50</span></label>
+        <input type="range" id="gravity-slider" min="1" max="200" value="50">
+      </div>
+      <div class="slider-group">
+        <label>Time Scale <span id="time-value">1.0x</span></label>
+        <input type="range" id="time-slider" min="1" max="50" value="10">
+      </div>
+      <div class="slider-group">
+        <label>Trail Length <span id="trail-value">50%</span></label>
+        <input type="range" id="trail-slider" min="0" max="100" value="50">
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="btn-row">
+        <button class="action-btn" id="btn-pause">⏸ Pause</button>
+        <button class="action-btn" id="btn-clear">🗑 Clear</button>
+      </div>
+      <div class="btn-row">
+        <button class="action-btn" id="btn-grid">◻ Grid</button>
+        <button class="action-btn" id="btn-mute">🔊 Sound</button>
+      </div>
+      <div class="btn-row">
+        <button class="action-btn" id="btn-cinema">🎬 Cinema</button>
+        <button class="action-btn" id="btn-vectors">→ Vectors</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reopen Controls Button -->
+  <button id="reopen-controls">☰ Controls</button>
+
+  <!-- Stats Panel -->
+  <div id="stats-panel" class="panel">
+    <div class="stat-row">
+      <span class="stat-label">Particles</span>
+      <span class="stat-value" id="stat-particles">0</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">Total Mass</span>
+      <span class="stat-value" id="stat-mass">0</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">Energy</span>
+      <span class="stat-value" id="stat-energy">0</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">FPS</span>
+      <span class="stat-value" id="stat-fps">0</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">Time</span>
+      <span class="stat-value" id="stat-time">0:00</span>
+    </div>
+  </div>
+
+  <!-- Info Panel (selected particle) -->
+  <div id="info-panel" class="panel" style="display:none">
+    <div class="panel-header">
+      <h2 id="info-type">Star</h2>
+      <button class="panel-toggle" id="close-info">×</button>
+    </div>
+    <div class="stat-row"><span class="stat-label">Mass</span><span class="stat-value" id="info-mass">0</span></div>
+    <div class="stat-row"><span class="stat-label">Velocity</span><span class="stat-value" id="info-vel">0</span></div>
+    <div class="stat-row"><span class="stat-label">Position</span><span class="stat-value" id="info-pos">0, 0</span>
+    </div>
+    <div class="stat-row"><span class="stat-label">Energy</span><span class="stat-value" id="info-energy">0</span></div>
+    <div class="stat-row"><span class="stat-label">Age</span><span class="stat-value" id="info-age">0s</span></div>
+    <div class="btn-row" style="margin-top:10px">
+      <button class="action-btn" id="info-follow">📷 Follow</button>
+      <button class="action-btn" id="info-delete">🗑 Delete</button>
+    </div>
+  </div>
+
+  <!-- Help Panel -->
+  <div id="help-panel" class="panel">
+    <div class="help-content">
+      <span>Click spawn · Drag launch · Scroll zoom · Right-drag pan · Middle-click attract · Shift+click select ·
+        <kbd>C</kbd> Cinema · <kbd>V</kbd> Vectors · <kbd>1-7</kbd> Presets</span>
+    </div>
+  </div>
+
+  <!-- Scripts (order matters) -->
+  <script src="js/physics.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/effects.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/presets.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>
